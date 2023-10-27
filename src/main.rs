@@ -27,6 +27,8 @@ enum Commands {
         date: NaiveDate,
         amount: Decimal,
     },
+    /// list all transactions
+    List { }
 }
 
 
@@ -42,6 +44,7 @@ fn main() {
             println!("adding transaction {new_transaction:?}");
             db.add_transaction(new_transaction);
         }
+        Commands::List { } => { todo!() }
     }
 
     db.store(&args.dbfile);
