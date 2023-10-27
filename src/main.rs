@@ -2,7 +2,7 @@ use clap::{Parser, Subcommand};
 use chrono::NaiveDate;
 use rust_decimal::Decimal;
 mod transaction;
-use transaction::Transaction;
+use transaction::{Transaction, Operation};
 mod database;
 use database::DataBase;
 
@@ -27,6 +27,8 @@ enum Commands {
         date: NaiveDate,
         amount: Decimal,
     },
+    /// list all transactions
+    List { }
 }
 
 
@@ -42,6 +44,7 @@ fn main() {
             println!("adding transaction {new_transaction:?}");
             db.add_transaction(new_transaction);
         }
+        Commands::List { } => { db.list_transaction().display() }
     }
 
     db.store(&args.dbfile);
