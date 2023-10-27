@@ -23,9 +23,14 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
+    /// add transaction
     Add {
         date: NaiveDate,
         amount: Decimal,
+    },
+    /// remove transaction by ID
+    Rm {
+        id: usize,
     },
     /// list all transactions
     List { }
@@ -44,6 +49,7 @@ fn main() {
             println!("adding transaction {new_transaction:?}");
             db.add_transaction(new_transaction);
         }
+        Commands::Rm { id } => { db.remove_transaction(id); }
         Commands::List { } => { db.list_transaction().display() }
     }
 
