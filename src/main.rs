@@ -1,3 +1,5 @@
+use std::str::FromStr;
+
 use clap::{Parser, Subcommand};
 use chrono::NaiveDate;
 use rust_decimal::Decimal;
@@ -27,6 +29,7 @@ enum Commands {
     Add {
         date: NaiveDate,
         #[arg(allow_hyphen_values = true)] // this allow to enter negative number without leading --
+        #[arg(value_parser = check_decimal)]
         amount: Decimal,
     },
     /// remove transaction by ID
@@ -37,7 +40,18 @@ enum Commands {
     List { }
 }
 
+/// Check if entered amount is a decimal with only 2 number after the comma
+fn check_decimal(s: &str) -> Result<Decimal, String> {
+    let dec: Decimal = s.parse().map_err(|e| format!("{e}"))?;
 
+    let dec = dec.normalize(); //Strips any trailing zero’s
+
+    if dec.scale() > 2{
+        Err(format!("No more than 2 decimal"))
+    }else{
+        Ok(dec)
+    }
+}
 
 fn main() {
     let args = Cli::parse();
