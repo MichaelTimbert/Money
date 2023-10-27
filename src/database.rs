@@ -61,4 +61,16 @@ impl DataBase{
             .collect()
     }
 
+    pub fn remove_transaction(&mut self, id:usize) -> Option<Transaction>{
+
+        for (pos, tr) in self.transactions.iter().enumerate() {
+            if tr.id == id {
+                let tr_rm = self.transactions.remove(pos);
+                return Some(tr_rm);
+            }
+        }
+        None
+
+    }
+
 }
