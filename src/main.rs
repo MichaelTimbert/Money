@@ -26,6 +26,7 @@ enum Commands {
     /// add transaction
     Add {
         date: NaiveDate,
+        #[arg(allow_hyphen_values = true)] // this allow to enter negative number without leading --
         amount: Decimal,
     },
     /// remove transaction by ID
