@@ -1,6 +1,7 @@
 use crate::Transaction;
 use std::fs::OpenOptions;
 use serde::{Deserialize, Serialize};
+use itertools::Itertools;
 
 #[derive(Default, Serialize, Deserialize)]
 pub struct DataBase {
@@ -52,4 +53,12 @@ impl DataBase{
         tr.id = self.new_id();
         self.transactions.push(tr);
     }
+
+    pub fn list_transaction(&self) -> Vec<&Transaction> {
+        self.transactions
+            .iter()
+            .sorted_by(|a, b| a.date.cmp(&b.date))
+            .collect()
+    }
+
 }
