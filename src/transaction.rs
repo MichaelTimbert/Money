@@ -3,6 +3,7 @@ use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
 use std::io::Write;
 use tabwriter::TabWriter;
+use colored::Colorize;
 
 #[derive(Debug,Serialize, Deserialize)]
 pub struct Transaction {
@@ -27,7 +28,13 @@ impl Operation for Vec<&Transaction> {
 
 
         for &tr in self {
-            writeln!(&mut tw, "{}\t{}\t{}",tr.id,tr.date,tr.amount).unwrap();
+            let amount  = if tr.amount < Decimal::ZERO {
+                format!("{:.2}",tr.amount).red()
+            }else {
+                format!("{:.2}",tr.amount).green()
+            };
+            
+            writeln!(&mut tw, "{}\t{}\t{}",tr.id,tr.date,amount).unwrap();
         }
 
         tw.flush().unwrap();
