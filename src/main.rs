@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use clap::{Parser, Subcommand};
 use chrono::NaiveDate;
 use rust_decimal::Decimal;
@@ -7,6 +5,8 @@ mod transaction;
 use transaction::{Transaction, Operation};
 mod database;
 use database::DataBase;
+mod balance;
+use balance::ComputeBalance;
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -37,7 +37,9 @@ enum Commands {
         id: usize,
     },
     /// list all transactions
-    List { }
+    List { },
+    /// summary
+    Summary { }
 }
 
 /// Check if entered amount is a decimal with only 2 number after the comma
@@ -66,7 +68,15 @@ fn main() {
         }
         Commands::Rm { id } => { db.remove_transaction(id); }
         Commands::List { } => { db.list_transaction().display() }
+        Commands::Summary { } => { summary(db.list_transaction())}
     }
 
     db.store(&args.dbfile);
+}
+
+
+fn summary(list: Vec<&Transaction>){
+    let bal = list.balance();
+    println!("{bal}");
+
 }
