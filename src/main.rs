@@ -8,7 +8,9 @@ use database::DataBase;
 mod balance;
 use balance::ComputeBalance;
 use crate::merchant::Merchant;
+use crate::tag::Tag;
 mod merchant;
+mod tag;
 mod filter;
 
 
@@ -39,6 +41,8 @@ enum Commands {
         note: Option<String>,
         #[arg(short)]
         merchant: Option<String>,
+        #[arg(short)]
+        tag: Option<String>,
     },
     /// remove transaction by ID
     Rm {
@@ -69,8 +73,8 @@ fn main() {
     let mut db = DataBase::load(&args.dbfile);
 
     match args.cmd {
-        Commands::Add { date, amount , note, merchant} => {
-            let new_transaction = Transaction{id:0, date, amount, note, merchant};
+        Commands::Add { date, amount , note, merchant, tag} => {
+            let new_transaction = Transaction{id:0, date, amount, note, merchant, tag};
             println!("adding transaction {new_transaction:?}");
             db.add_transaction(new_transaction);
         }
@@ -91,4 +95,8 @@ fn summary(list: Vec<&Transaction>){
         println!("{} {}",m.0,m.1.total())
    }
 
+   println!("tags!!");
+   for m in list.tags_balance(){
+        println!("{} {}",m.0,m.1.total())
+   }
 }

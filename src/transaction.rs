@@ -17,6 +17,8 @@ pub struct Transaction {
     pub note: Option<String>,
     // Optional Merchant
     pub merchant: Option<String>,
+    // Optional Tag
+    pub tag: Option<String>,
 }
 
 pub trait Operation {
@@ -38,6 +40,12 @@ impl Operation for Vec<&Transaction> {
                 format!("{:.2}",tr.amount).green()
             };
             
+            let tag = if let Some(t) = &tr.tag{
+                t.to_string()
+            }else {
+                "".to_string()
+            };
+
             let merchant = if let Some(m) = &tr.merchant{
                 m.to_string()
             }else {
@@ -50,7 +58,7 @@ impl Operation for Vec<&Transaction> {
                 "".to_string()
             };
 
-            writeln!(&mut tw, "{}\t{}\t{}\t{}\t{}",tr.id,tr.date,amount,merchant,note).unwrap();
+            writeln!(&mut tw, "{}\t{}\t{}\t{}\t{}\t{}",tr.id,tr.date,amount,tag,merchant,note).unwrap();
         }
 
         tw.flush().unwrap();
