@@ -31,6 +31,8 @@ enum Commands {
         #[arg(allow_hyphen_values = true)] // this allow to enter negative number without leading --
         #[arg(value_parser = check_decimal)]
         amount: Decimal,
+        #[arg(short)]
+        note: Option<String>,
     },
     /// remove transaction by ID
     Rm {
@@ -61,8 +63,8 @@ fn main() {
     let mut db = DataBase::load(&args.dbfile);
 
     match args.cmd {
-        Commands::Add { date, amount } => {
-            let new_transaction = Transaction{id:0, date, amount};
+        Commands::Add { date, amount , note} => {
+            let new_transaction = Transaction{id:0, date, amount, note};
             println!("adding transaction {new_transaction:?}");
             db.add_transaction(new_transaction);
         }

@@ -13,6 +13,8 @@ pub struct Transaction {
     pub date: NaiveDate,
     // Amount of the transaction
     pub amount: Decimal,
+    // Optional Note/Description
+    pub note: Option<String>,
 }
 
 pub trait Operation {
@@ -34,7 +36,13 @@ impl Operation for Vec<&Transaction> {
                 format!("{:.2}",tr.amount).green()
             };
             
-            writeln!(&mut tw, "{}\t{}\t{}",tr.id,tr.date,amount).unwrap();
+            let note = if let Some(n) = &tr.note{
+                format!("note: {n}")
+            }else {
+                "".to_string()
+            };
+
+            writeln!(&mut tw, "{}\t{}\t{}\t{}",tr.id,tr.date,amount,note).unwrap();
         }
 
         tw.flush().unwrap();
