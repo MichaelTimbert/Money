@@ -7,6 +7,10 @@ mod database;
 use database::DataBase;
 mod balance;
 use balance::ComputeBalance;
+use crate::merchant::Merchant;
+mod merchant;
+mod filter;
+
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -33,6 +37,8 @@ enum Commands {
         amount: Decimal,
         #[arg(short)]
         note: Option<String>,
+        #[arg(short)]
+        merchant: Option<String>,
     },
     /// remove transaction by ID
     Rm {
@@ -63,8 +69,8 @@ fn main() {
     let mut db = DataBase::load(&args.dbfile);
 
     match args.cmd {
-        Commands::Add { date, amount , note} => {
-            let new_transaction = Transaction{id:0, date, amount, note};
+        Commands::Add { date, amount , note, merchant} => {
+            let new_transaction = Transaction{id:0, date, amount, note, merchant};
             println!("adding transaction {new_transaction:?}");
             db.add_transaction(new_transaction);
         }
@@ -80,5 +86,9 @@ fn main() {
 fn summary(list: Vec<&Transaction>){
     let bal = list.balance();
     println!("{bal}");
+
+   for m in list.merchants_balance(){
+        println!("{} {}",m.0,m.1.total())
+   }
 
 }
