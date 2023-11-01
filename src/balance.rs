@@ -41,6 +41,12 @@ impl Display for Balance {
     }
 }
 
+impl Balance{
+    pub fn total(&self) -> Decimal{
+        self.income + self.outcome
+    }
+}
+
 pub trait ComputeBalance {
     fn balance(&self) -> Balance;
 }
