@@ -12,6 +12,8 @@ use crate::tag::Tag;
 mod merchant;
 mod tag;
 mod filter;
+mod display;
+use crate::display::Display;
 
 
 #[derive(Parser, Debug)]
@@ -61,7 +63,7 @@ fn check_decimal(s: &str) -> Result<Decimal, String> {
     let dec = dec.normalize(); //Strips any trailing zero’s
 
     if dec.scale() > 2{
-        Err(format!("No more than 2 decimal"))
+        Err("No more than 2 decimal".to_string())
     }else{
         Ok(dec)
     }
@@ -89,14 +91,12 @@ fn main() {
 
 fn summary(list: Vec<&Transaction>){
     let bal = list.balance();
+    println!("total balance:");
     println!("{bal}");
 
-   for m in list.merchants_balance(){
-        println!("{} {}",m.0,m.1.total())
-   }
+    println!("by merchants:");
+    list.merchants_balance().display();
 
-   println!("tags!!");
-   for m in list.tags_balance(){
-        println!("{} {}",m.0,m.1.total())
-   }
+    println!("by tags:");
+    list.tags_balance().display();
 }

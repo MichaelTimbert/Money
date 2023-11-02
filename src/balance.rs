@@ -1,11 +1,11 @@
 use rust_decimal::Decimal;
 use crate::Transaction;
 use std::fmt::Display;
-use std::{io::Write};
+use std::io::Write;
 use tabwriter::TabWriter;
 use colored::Colorize;
 
-
+#[derive(Default,Clone)]
 pub struct Balance {
     pub income: Decimal,
     pub outcome: Decimal,
@@ -65,5 +65,12 @@ impl ComputeBalance for Vec<&Transaction>{
         }
 
         Balance{income,outcome}
+    }
+}
+
+impl std::ops::AddAssign for Balance{
+    fn add_assign(&mut self, rhs: Self) {
+        self.income  = self.income + rhs.income;
+        self.outcome = self.outcome + rhs.outcome;
     }
 }

@@ -40,7 +40,7 @@ impl Merchant for Vec<&Transaction>{
             im.insert(merchant, mbalance);
         }
 
-        im.sort_by(|k1,v1,k2,v2| v1.total().cmp(&v2.total()));
+        im.sort_by(|_k1,v1,_k2,v2| v1.total().cmp(&v2.total()));
         im
     }
 }
