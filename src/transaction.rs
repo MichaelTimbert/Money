@@ -30,7 +30,7 @@ impl Operation for Vec<&Transaction> {
     fn display(&self) {
         let mut tw = TabWriter::new(vec![]);
 
-        writeln!(&mut tw, "{}\t{}\t{}","id","date","amount").unwrap();
+        writeln!(&mut tw, "{}\t{}\t{}\t{}\t{}\t{}","id","date","amount","tag","merchant","note").unwrap();
 
 
         for &tr in self {

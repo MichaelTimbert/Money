@@ -1,7 +1,9 @@
+use rust_decimal::Decimal;
 use tabwriter::TabWriter;
 use std::io::Write;
 use indexmap::IndexMap;
 use crate::balance::Balance;
+use colored::Colorize;
 
 pub trait Display{
     fn display(&self);
@@ -11,36 +13,31 @@ impl Display for IndexMap<String, Balance>{
     fn display(&self){
         let mut tw = TabWriter::new(vec![]);
 
-        writeln!(&mut tw, "key\tincome\toutcome\ttotal").unwrap();
+        writeln!(&mut tw, "{}\t{}\t{}\t{}","key","income","outcome","total").unwrap();
 
         for i in self {
             let key = i.0;
             let balance = i.1;
-            // let amount  = if tr.amount < Decimal::ZERO {
-            //     format!("{:.2}",tr.amount).red()
-            // }else {
-            //     format!("{:.2}",tr.amount).green()
-            // };
-            
-            // let tag = if let Some(t) = &tr.tag{
-            //     t.to_string()
-            // }else {
-            //     "".to_string()
-            // };
 
-            // let merchant = if let Some(m) = &tr.merchant{
-            //     m.to_string()
-            // }else {
-            //     "".to_string()
-            // };
+            let income  = if balance.income < Decimal::ZERO{
+                format!("{:.2}",balance.income).red()
+            }else {
+                format!("{:.2}",balance.income).green()
+            };
 
-            // let note = if let Some(n) = &tr.note{
-            //     format!("note: {n}")
-            // }else {
-            //     "".to_string()
-            // };
+            let outcome  = if balance.outcome < Decimal::ZERO{
+                format!("{:.2}",balance.outcome).red()
+            }else {
+                format!("{:.2}",balance.outcome).green()
+            };
 
-            writeln!(&mut tw, "{}\t{:.2}\t{:.2}\t{:.2}",key, balance.income, balance.outcome, balance.total()).unwrap();
+            let total  = if balance.total() < Decimal::ZERO{
+                format!("{:.2}",balance.total()).red()
+            }else {
+                format!("{:.2}",balance.total()).green()
+            };
+
+            writeln!(&mut tw, "{}\t{}\t{}\t{}",key, income, outcome, total).unwrap();
             
         }
         let mut total = Balance::default();
