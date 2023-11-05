@@ -15,6 +15,10 @@ pub struct Transaction {
     pub amount: Decimal,
     // Optional Note/Description
     pub note: Option<String>,
+    // Optional Merchant
+    pub merchant: Option<String>,
+    // Optional Tag
+    pub tag: Option<String>,
 }
 
 pub trait Operation {
@@ -26,7 +30,7 @@ impl Operation for Vec<&Transaction> {
     fn display(&self) {
         let mut tw = TabWriter::new(vec![]);
 
-        writeln!(&mut tw, "{}\t{}\t{}","id","date","amount").unwrap();
+        writeln!(&mut tw, "{}\t{}\t{}\t{}\t{}\t{}","id","date","amount","tag","merchant","note").unwrap();
 
 
         for &tr in self {
@@ -36,13 +40,25 @@ impl Operation for Vec<&Transaction> {
                 format!("{:.2}",tr.amount).green()
             };
             
+            let tag = if let Some(t) = &tr.tag{
+                t.to_string()
+            }else {
+                "".to_string()
+            };
+
+            let merchant = if let Some(m) = &tr.merchant{
+                m.to_string()
+            }else {
+                "".to_string()
+            };
+
             let note = if let Some(n) = &tr.note{
                 format!("note: {n}")
             }else {
                 "".to_string()
             };
 
-            writeln!(&mut tw, "{}\t{}\t{}\t{}",tr.id,tr.date,amount,note).unwrap();
+            writeln!(&mut tw, "{}\t{}\t{}\t{}\t{}\t{}",tr.id,tr.date,amount,tag,merchant,note).unwrap();
         }
 
         tw.flush().unwrap();

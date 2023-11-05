@@ -7,6 +7,14 @@ mod database;
 use database::DataBase;
 mod balance;
 use balance::ComputeBalance;
+use crate::merchant::Merchant;
+use crate::tag::Tag;
+mod merchant;
+mod tag;
+mod filter;
+mod display;
+use crate::display::Display;
+
 
 #[derive(Parser, Debug)]
 struct Cli {
@@ -33,6 +41,10 @@ enum Commands {
         amount: Decimal,
         #[arg(short)]
         note: Option<String>,
+        #[arg(short)]
+        merchant: Option<String>,
+        #[arg(short)]
+        tag: Option<String>,
     },
     /// remove transaction by ID
     Rm {
@@ -51,7 +63,7 @@ fn check_decimal(s: &str) -> Result<Decimal, String> {
     let dec = dec.normalize(); //Strips any trailing zero’s
 
     if dec.scale() > 2{
-        Err(format!("No more than 2 decimal"))
+        Err("No more than 2 decimal".to_string())
     }else{
         Ok(dec)
     }
@@ -63,8 +75,8 @@ fn main() {
     let mut db = DataBase::load(&args.dbfile);
 
     match args.cmd {
-        Commands::Add { date, amount , note} => {
-            let new_transaction = Transaction{id:0, date, amount, note};
+        Commands::Add { date, amount , note, merchant, tag} => {
+            let new_transaction = Transaction{id:0, date, amount, note, merchant, tag};
             println!("adding transaction {new_transaction:?}");
             db.add_transaction(new_transaction);
         }
@@ -79,6 +91,12 @@ fn main() {
 
 fn summary(list: Vec<&Transaction>){
     let bal = list.balance();
+    println!("total balance:");
     println!("{bal}");
 
+    println!("by merchants:");
+    list.merchants_balance().display();
+
+    println!("by tags:");
+    list.tags_balance().display();
 }
