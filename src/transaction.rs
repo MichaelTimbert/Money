@@ -19,6 +19,8 @@ pub struct Transaction {
     pub merchant: Option<String>,
     // Optional Tag
     pub tag: Option<String>,
+    // Optional Account
+    pub account: Option<String>,
 }
 
 pub trait Operation {

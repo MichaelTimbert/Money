@@ -45,6 +45,8 @@ enum Commands {
         merchant: Option<String>,
         #[arg(short)]
         tag: Option<String>,
+        #[arg(short)]
+        account: Option<String>,
     },
     /// remove transaction by ID
     Rm {
@@ -75,8 +77,8 @@ fn main() {
     let mut db = DataBase::load(&args.dbfile);
 
     match args.cmd {
-        Commands::Add { date, amount , note, merchant, tag} => {
-            let new_transaction = Transaction{id:0, date, amount, note, merchant, tag};
+        Commands::Add { date, amount , note, merchant, tag, account} => {
+            let new_transaction = Transaction{id:0, date, amount, note, merchant, tag, account};
             println!("adding transaction {new_transaction:?}");
             db.add_transaction(new_transaction);
         }
