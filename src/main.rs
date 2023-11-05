@@ -11,6 +11,8 @@ use crate::merchant::Merchant;
 use crate::tag::Tag;
 mod merchant;
 mod tag;
+mod account;
+use crate::account::Account;
 mod filter;
 mod display;
 use crate::display::Display;
@@ -101,4 +103,7 @@ fn summary(list: Vec<&Transaction>){
 
     println!("by tags:");
     list.tags_balance().display();
+
+    println!("by accounts:");
+    list.accounts_balance().display();
 }
