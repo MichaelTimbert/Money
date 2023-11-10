@@ -1,10 +1,10 @@
-use crate::Transaction;
+use crate::{Transaction, account};
 
 
 pub trait Filter {    
     fn merchant(&self, merchant: &str) -> Vec<&Transaction>;
     fn tag(&self, tag: &str) -> Vec<&Transaction>;
-
+    fn account(&self, account: &str) -> Vec<&Transaction>;
 }
 
 
@@ -24,4 +24,10 @@ impl Filter for Vec<&Transaction>{
         .collect()
     }
     
+    fn account(&self, account: &str) -> Vec<&Transaction>{
+        self.iter()
+        .filter(|tr| tr.account == Some(account.to_string()))
+        .copied()
+        .collect()
+    }
 }
